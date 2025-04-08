@@ -34,9 +34,35 @@
             <artifactId>junit</artifactId>
             <!-- 使用 properties 中定义的属性值 -->
             <version>${junit.version}</version>
-            <!-- scope 属性可选 -->
+            <!--
+                scope 为 test 时，表示 jar 包只在 测试环境中生效
+            -->
             <scope>test</scope>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.2.8</version>
+            <!--
+                scope 的默认值为 compile
+                此时依赖的 jar 包可以在 编译环境，测试环境，运行环境中生效
+            -->
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <!--
+                scope 为 scope 时，依赖的 jar 包在编译环境，测试环境中生效，生产环境已经存在对应的jar，因此该依赖不会打包到生产环境中
+            -->
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
 </project>
