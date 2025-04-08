@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="
             http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+    <!-- 模型版本 -->
     <modelVersion>4.0.0</modelVersion>
 
     <!-- maven工程的坐标 -->
@@ -11,30 +11,32 @@
     <artifactId>maven-java</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <!-- maven工程的打包方式 -->
+    <!--
+        maven工程的打包方式
+        jar (默认): 普通java项目打包方式，项目打成 jar 包
+        war: web项目打包方式，项目打成 war 包
+        pom: pom 方式不会将项目打包，这个项目作为父工程，被其他项目聚合或继承
+    -->
     <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- 配置junit版本号 -->
+        <junit.version>4.13.2</junit.version>
     </properties>
 
     <dependencies>
+        <!-- 导入 junit 依赖 -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>        <!-- 依赖作用域 -->
-            <optional>true</optional>  <!-- 可选依赖（不会传递） -->
-            <exclusions>               <!-- 排除传递依赖 -->
-                <exclusion>
-                    <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest-core</artifactId>
-                </exclusion>
-            </exclusions>
+            <!-- 使用 properties 中定义的属性值 -->
+            <version>${junit.version}</version>
+            <!-- scope 属性可选 -->
+            <scope>test</scope>
         </dependency>
     </dependencies>
-
 
 </project>

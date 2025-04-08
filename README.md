@@ -1,3 +1,5 @@
+[toc]
+
 # Maven的安装和配置
 
 maven地址
@@ -145,15 +147,16 @@ maven 默认生命周期定义了构建时所需执行的所有步骤，是maven
 
 ## 命令方式项目构建
 
-| 命令            | 描述                       |
-|---------------|--------------------------|
-| `mvn compile` | 编译项目，生成 `target` 文件      |
-| `mvn package` | 打包项目，生成 `jar` 或 `war` 文件 |
-| `mvn clean`   | 清理编译 或 打包 后的项目结构         |
-| `mvn install` | 打包后上传到 `maven` 本地仓库      |
-| `mvn deploy`  | 只打包，上传到 `maven` 私服仓库     |
-| `mvn site`    | 生成站点                     |
-| `mvn test`    | 执行测试代码                   |
+| 命令                 | 描述                                   |
+|--------------------|--------------------------------------|
+| `mvn compile`      | 编译项目，生成 `target` 文件                  |
+| `mvn test-compile` | 编译项目 (包含 test 目录下的代码)，生成 `target` 文件 |
+| `mvn package`      | 打包项目，生成 `jar` 或 `war` 文件             |
+| `mvn clean`        | 清理编译 或 打包 后的项目结构                     |
+| `mvn install`      | 打包后上传到 `maven` 本地仓库                  |
+| `mvn deploy`       | 只打包，上传到 `maven` 私服仓库                 |
+| `mvn site`         | 生成站点                                 |
+| `mvn test`         | 执行测试代码                               |
 
 ### `mvn clean`
 
@@ -167,13 +170,25 @@ maven 默认生命周期定义了构建时所需执行的所有步骤，是maven
 
 ### `mvn compile`
 
-编译项目，生成 `target` 文件
+编译项目，生成 `target` 目录
 
 ![mvn compile](./imgs/mvn-compile-cmd.png)
 
 编译后得到 `target` 产物如下
 
 ![mvn compile result](./imgs/mvn-compile-result.png)
+
+
+### `mvn test-compile`
+
+编译项目 (包含 test 目录代码)， 生成 `target` 目录
+
+![mvn test-compile](./imgs/mvn-test-compile-cmd.png)
+
+编译后得到 `target` 产物如下
+
+![mvn test-compile result](./imgs/mvn-test-compile-result.png)
+
 
 ### `mvn package`
 
@@ -185,7 +200,6 @@ maven 默认生命周期定义了构建时所需执行的所有步骤，是maven
 
 ![mvn package result](./imgs/mvn-package-result.png)
 
-
 ### `mvn install`
 
 打包后上传到 `maven` 本地仓库
@@ -196,6 +210,75 @@ maven 默认生命周期定义了构建时所需执行的所有步骤，是maven
 
 ![mvn install repository](./imgs/mvn-install-repository.png)
 
+# `Maven` 依赖管理
+
+## `maven` 工程核心信息配置 (`GAVP`)
+
+`pom.xml`
+
+```xml
+<!-- 模型版本 -->
+<modelVersion>4.0.0</modelVersion>
+
+        <!-- maven工程的坐标 -->
+<groupId>org.example.maven</groupId>
+<artifactId>maven-java</artifactId>
+<version>1.0-SNAPSHOT</version>
+
+        <!--
+            maven工程的打包方式
+            jar (默认): 普通java项目打包方式，项目打成 jar 包
+            war: web项目打包方式，项目打成 war 包
+            pom: pom 方式不会将项目打包，这个项目作为父工程，被其他项目聚合或继承
+        -->
+<packaging>jar/war/pom</packaging>
+```
+
+## `maven` 工程依赖管理配置
+
+`pom.xml`
+
+```xml
+
+<properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- 配置junit版本号 -->
+    <junit.version>4.13.2</junit.version>
+</properties>
+
+<dependencies>
+<!-- 导入 junit 依赖 -->
+<dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <!-- 使用 properties 中定义的属性值 -->
+    <version>${junit.version}</version>
+    <!-- scope 属性可选 -->
+    <scope>test</scope>
+</dependency>
+</dependencies>
+```
+
+## 依赖范围
+
+通过设置坐标的依赖范围 (`<scope>`)，可以设置对应 jar 包的作用范围: 编译环境、测试环境、运行环境;
+
+| 依赖范围       | 描述                                                                                                                                          |
+|------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| `compile`  | 编译依赖范围，`scope` 元素的缺省值 (默认值)。使用此依赖范围的 `Maven` 依赖，对于三种 `classpath` 均有效，即该 `Maven` 依赖在上述三种 `classpath`均会被引入。例如 `log4j` 在 编译、测试、运行过程都是必须的。      |
+| `test`     | 测试依赖范围，使用此依赖范围的 `Maven` 依赖，只对测试 `classpath` 有效。例如 `junit` 依赖只有在测试阶段才需要。                                                                     |
+| `provided` | 依赖在编译和测试阶段需要，但运行时由容器提供，不会打包到最终构建结果。例如，`servlet-api` 依赖对于编译、测试阶段而言是需要的，但是运行阶段，由于外部容器已经提供了对应依赖，因此无需重复引入;                                      |
+| `runtime`  | 运行时范围依赖，使用此依赖范围的 `Maven` 依赖，只对测试`classpath`、运行`classpath` 有效，例如: `JDBC` 驱动实现依赖，其在编译时只需 `JDK` 提供的 `JDBC` 接口即可，已有测试、运行阶段才需要实现了 `JDBC` 接口的驱动;  |
+| `system`   | 系统范围依赖，其效果与 `provided` 的依赖范围一致，用于添加非 `Maven` 仓库的本地依赖，通过依赖元素 `dependency` 中的 `systemPath` 元素指定本地依赖路径。鉴于使用 `system` 依赖会导致项目的可移植性降低，一般不推荐使用;   |
+| `import`   | 导入依赖范围，该依赖范围只能与 `dependencyManagement` 元素配合使用，其功能是将目标 `pom.xml` 文件中 `dependencyManagement` 的配置导入合并到当前 `pom.xml` 的 `dependencyManagement` 中; |
+
+# `Maven`依赖传递和依赖冲突
+
+# `Maven`工程继承和聚合关系
+
+# `Maven` 私服
 
 
 
