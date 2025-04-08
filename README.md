@@ -137,6 +137,12 @@ my-project/
 
 同时项目构建能够将多个开发人员的代码汇合到一起，并能够自动化项目的构建和部署，大大降低项目的出错风险和提高开发效率。
 
+maven 默认生命周期定义了构建时所需执行的所有步骤，是maven生命周期的核心部分
+
+```text
+包含命令: compile -> test -> package -> install -> deploy
+```
+
 ## 命令方式项目构建
 
 | 命令            | 描述                       |
@@ -148,5 +154,50 @@ my-project/
 | `mvn deploy`  | 只打包，上传到 `maven` 私服仓库     |
 | `mvn site`    | 生成站点                     |
 | `mvn test`    | 执行测试代码                   |
+
+### `mvn clean`
+
+清理编译 或 打包 后的项目结构
+
+![mvn clean](./imgs/mvn-clean-cmd.png)
+
+清理后得到目录
+
+![mvn clean result](./imgs/mvn-clean-result.png)
+
+### `mvn compile`
+
+编译项目，生成 `target` 文件
+
+![mvn compile](./imgs/mvn-compile-cmd.png)
+
+编译后得到 `target` 产物如下
+
+![mvn compile result](./imgs/mvn-compile-result.png)
+
+### `mvn package`
+
+打包项目，生成 `.jar` 或 `.war` 文件
+
+![mvn package](./imgs/mvn-package-cmd.png)
+
+打包后得到 `target` 产物如下
+
+![mvn package result](./imgs/mvn-package-result.png)
+
+
+### `mvn install`
+
+打包后上传到 `maven` 本地仓库
+
+![mvn install](./imgs/mvn-install-cmd.png)
+
+打包完成后上传到 `maven` 本地仓库
+
+![mvn install repository](./imgs/mvn-install-repository.png)
+
+
+
+
 
 
