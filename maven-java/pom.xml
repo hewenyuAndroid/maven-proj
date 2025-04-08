@@ -65,4 +65,30 @@
 
     </dependencies>
 
+    <build>
+        <!--
+            自定义打包名称，jar包产物的名称
+        -->
+        <finalName>maven-java-output</finalName>
+
+        <!--
+            配置自定义打包的资源位置
+            例如: 配置将 src.org.example.mapper 目录下的所有 .xml 结尾的文件都打包到 jar 包中
+        -->
+        <resources>
+            <resource>
+                <!-- 配置包目录 -->
+                <directory>src/main/java/org/example/mapper</directory>
+                <includes>
+                    <!--
+                        配置匹配规则
+                        ** 表示 directory 目录下(包含子目录)
+                        *.xml 表示任意 .xml 结尾的文件
+                    -->
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
 </project>

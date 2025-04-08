@@ -178,7 +178,6 @@ maven 默认生命周期定义了构建时所需执行的所有步骤，是maven
 
 ![mvn compile result](./imgs/mvn-compile-result.png)
 
-
 ### `mvn test-compile`
 
 编译项目 (包含 test 目录代码)， 生成 `target` 目录
@@ -188,7 +187,6 @@ maven 默认生命周期定义了构建时所需执行的所有步骤，是maven
 编译后得到 `target` 产物如下
 
 ![mvn test-compile result](./imgs/mvn-test-compile-result.png)
-
 
 ### `mvn package`
 
@@ -273,6 +271,64 @@ maven 默认生命周期定义了构建时所需执行的所有步骤，是maven
 | `runtime`  | 运行时范围依赖，使用此依赖范围的 `Maven` 依赖，只对测试`classpath`、运行`classpath` 有效，例如: `JDBC` 驱动实现依赖，其在编译时只需 `JDK` 提供的 `JDBC` 接口即可，已有测试、运行阶段才需要实现了 `JDBC` 接口的驱动;  |
 | `system`   | 系统范围依赖，其效果与 `provided` 的依赖范围一致，用于添加非 `Maven` 仓库的本地依赖，通过依赖元素 `dependency` 中的 `systemPath` 元素指定本地依赖路径。鉴于使用 `system` 依赖会导致项目的可移植性降低，一般不推荐使用;   |
 | `import`   | 导入依赖范围，该依赖范围只能与 `dependencyManagement` 元素配合使用，其功能是将目标 `pom.xml` 文件中 `dependencyManagement` 的配置导入合并到当前 `pom.xml` 的 `dependencyManagement` 中; |
+
+### `Maven` 工程 `build` 构建配置
+
+项目构建是指将源代码、依赖库和资源文件等转换成可执行或可部署应用程序的过程，在这个过程中包括编译源代码、链接依赖库、打包和部署等多个步骤。
+
+默认情况下，构建不需要额外配置，构建过程都有对应的缺省配置。
+
+#### 设置打包产物的名称
+
+```xml
+
+<build>
+    <!--
+        自定义打包名称，jar包产物的名称
+    -->
+    <finalName>maven-java-output</finalName>
+</build>
+```
+
+配置后，执行打包命令 `mvn package` 得到编译的 jar 包如下
+
+![mvn-build-final-name](./imgs/mvn-build-final-name.png)
+
+#### 指定打包文件
+
+如果在 java 目录中添加类，mvn 构建时会将其编译到 `classes` 目录下，但是如果在 java 目录中添加非 java 类 (例如: `.xml`
+文件)，此时该文件默认不会被打包。
+
+默认情况下，按照 maven 工程结构放置的文件会默认被编译和打包，除此之外，还可以使用 `<resources>`
+标签，指定要打包资源的目录，例如 `mybatis` 中有时会将 `mapper` 映射文件编写在 java 目录中。
+
+```xml
+
+<build>
+    <!--
+         配置自定义打包的资源位置
+         例如: 配置将 src.org.example.mapper 目录下的所有 .xml 结尾的文件都打包到 jar 包中
+     -->
+    <resources>
+        <resource>
+            <!-- 配置包目录 -->
+            <directory>src/main/java/org/example/mapper</directory>
+            <includes>
+                <!--
+                    配置匹配规则
+                    ** 表示 directory 目录下(包含子目录)
+                    *.xml 表示任意 .xml 结尾的文件
+                -->
+                <include>**/*.xml</include>
+            </includes>
+        </resource>
+    </resources>
+</build>
+```
+
+执行 `mvn package` 命令后，可以在 `classes` 目录中找到对应的 xml 文件
+
+![mvn-build-resources-xml](./imgs/mvn-build-resources-xml.png)
 
 # `Maven`依赖传递和依赖冲突
 
