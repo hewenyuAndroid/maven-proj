@@ -378,8 +378,27 @@ maven 默认生命周期定义了构建时所需执行的所有步骤，是maven
 
 > 解决依赖冲突的方式
 
-1. 自动选择原则
-    - 使用
+maven 默认处理的方式
+
+- 路径最短优先原则
+
+`A -> B -> C - X(version:1.2.1)`
+
+`A -> B -> X(version: 1.1.1)`
+
+根据路径最短优先原则，A 最终会依赖 `x(version:1.1.1)` 版本的sdk
+
+![maven-dependency-conflict-min-path](./imgs/maven-dependency-conflict-min-path.png)
+
+- 依赖路径长度相同情况下，使用 先声明优先原则
+
+`A -> D -> X(version:1.0.1)`  // 假设D声明在B之前
+
+`A -> B -> X(version:1.2.1)`
+
+根据路径相同，采用 先声明原则，最终 A 会依赖 `X(version:1.0.1)`
+
+![maven-dependency-conflict-pre-declare](./imgs/maven-dependency-conflict-pre-declare.png)
 
 # `Maven`工程继承和聚合关系
 

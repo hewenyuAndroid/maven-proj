@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.example.web</groupId>
-    <artifactId>maven-B</artifactId>
+    <artifactId>maven-D</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -15,27 +15,10 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
-            <version>1.2.7</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.example.web</groupId>
-            <artifactId>maven-C</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <!--
-                1.  maven-B 依赖 maven-C 作用范围为 compile 时
-                    maven-A 可以间接依赖 maven-C
-                2.  maven-B 依赖 maven-C 作为范围为非 compile 时
-                    maven-A 不会间接依赖 maven-C
-                3.  maven-B 依赖 maven-C 配置了 optional 参数时
-                    maven-A 不会间接依赖 mavenC
-            -->
-            <scope>compile</scope>
-<!--            <optional>true</optional>-->
+            <version>1.2.6</version>
         </dependency>
     </dependencies>
 
