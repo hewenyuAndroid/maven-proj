@@ -272,11 +272,10 @@ maven 默认生命周期定义了构建时所需执行的所有步骤，是maven
 | `system`   | 系统范围依赖，其效果与 `provided` 的依赖范围一致，用于添加非 `Maven` 仓库的本地依赖，通过依赖元素 `dependency` 中的 `systemPath` 元素指定本地依赖路径。鉴于使用 `system` 依赖会导致项目的可移植性降低，一般不推荐使用;   |
 | `import`   | 导入依赖范围，该依赖范围只能与 `dependencyManagement` 元素配合使用，其功能是将目标 `pom.xml` 文件中 `dependencyManagement` 的配置导入合并到当前 `pom.xml` 的 `dependencyManagement` 中; |
 
-
-在 `maven-web` 项目下执行打包命令 `mvn package` ，此时 `compile`、`test`、`provided` 三个作用域的依赖，只有 `compile` 作用域的依赖被打入到最终的产物中
+在 `maven-web` 项目下执行打包命令 `mvn package` ，此时 `compile`、`test`、`provided` 三个作用域的依赖，只有 `compile`
+作用域的依赖被打入到最终的产物中
 
 ![mvn-package-scope-war-result](./imgs/mvn-package-scope-war-result.png)
-
 
 ### `Maven` 工程 `build` 构建配置
 
@@ -337,6 +336,50 @@ maven 默认生命周期定义了构建时所需执行的所有步骤，是maven
 ![mvn-build-resources-xml](./imgs/mvn-build-resources-xml.png)
 
 # `Maven`依赖传递和依赖冲突
+
+## `Maven` 依赖的传递性
+
+当项目 A 依赖 B 库，B 库又依赖 C 库 ( `A -> B -> C` )，此时 `maven` 会将 C 库作为项目 A 的间接依赖引入到项目中，这就是依赖的传递性。
+
+依赖传递的规则: 在 `A -> B -> C` 依赖链路中，C 是否能够传递到 A 取决于 B 依赖 C 时使用的依赖范围以及配置。
+
+- B 依赖 C 时，`scope` 为 `compile`: C 可以传递到 A;
+
+![maven-dependency-compile](./imgs/maven-dependency-A-B-C-compile.png)
+
+- B 依赖 C 时，`scope` 为 `test` 或 `provided`: C 不能传递到 A，此时如果需要 C 的依赖时，A需要明确的配置 C 的依赖。
+
+![maven-dependency-not-compile](./imgs/maven-dependency-A-B-C-not-compile.png)
+
+- B 依赖 C 时，配置了以下标签时，C 不能传递到 A;
+
+```xml
+
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid</artifactId>
+    <version>1.2.15</version>
+    <optional>true</optional>
+</dependency>
+```
+
+![maven-dependency-optional](./imgs/maven-dependency-A-B-C-optional.png)
+
+> 依赖传递终止的场景
+
+- 非 `compile` 范围进行依赖传递;
+- 使用 `optional` 标签配置终止传递;
+- 依赖冲突 (传递的依赖已经存在);
+
+## `Maven` 依赖冲突特性
+
+当直接引用或者间接引用出现了相同的 jar包，项目中就会出现相同重复的 jar包，此时会出现依赖冲突。`maven`
+会按照自己的规则进行重复依赖的选择，此外也提供了手动解决冲突的方式。
+
+> 解决依赖冲突的方式
+
+1. 自动选择原则
+    - 使用
 
 # `Maven`工程继承和聚合关系
 
