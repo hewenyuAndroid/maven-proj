@@ -400,6 +400,29 @@ maven 默认处理的方式
 
 ![maven-dependency-conflict-pre-declare](./imgs/maven-dependency-conflict-pre-declare.png)
 
+> 手动解决依赖冲突问题
+
+使用 `exclusion` 标签标注需要移除的依赖坐标
+
+```xml
+
+<dependency>
+    <groupId>com.example.web</groupId>
+    <artifactId>maven-D</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <!-- 手动排除依赖 -->
+    <exclusions>
+        <exclusion>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+```
+
+![maven-dependency-conflict-exclusion](./imgs/maven-dependency-conflict-exclusion.png)
+
+
 # `Maven`工程继承和聚合关系
 
 # `Maven` 私服
