@@ -272,6 +272,12 @@ maven 默认生命周期定义了构建时所需执行的所有步骤，是maven
 | `system`   | 系统范围依赖，其效果与 `provided` 的依赖范围一致，用于添加非 `Maven` 仓库的本地依赖，通过依赖元素 `dependency` 中的 `systemPath` 元素指定本地依赖路径。鉴于使用 `system` 依赖会导致项目的可移植性降低，一般不推荐使用;   |
 | `import`   | 导入依赖范围，该依赖范围只能与 `dependencyManagement` 元素配合使用，其功能是将目标 `pom.xml` 文件中 `dependencyManagement` 的配置导入合并到当前 `pom.xml` 的 `dependencyManagement` 中; |
 
+
+在 `maven-web` 项目下执行打包命令 `mvn package` ，此时 `compile`、`test`、`provided` 三个作用域的依赖，只有 `compile` 作用域的依赖被打入到最终的产物中
+
+![mvn-package-scope-war-result](./imgs/mvn-package-scope-war-result.png)
+
+
 ### `Maven` 工程 `build` 构建配置
 
 项目构建是指将源代码、依赖库和资源文件等转换成可执行或可部署应用程序的过程，在这个过程中包括编译源代码、链接依赖库、打包和部署等多个步骤。
