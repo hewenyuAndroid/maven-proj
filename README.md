@@ -422,8 +422,101 @@ maven 默认处理的方式
 
 ![maven-dependency-conflict-exclusion](./imgs/maven-dependency-conflict-exclusion.png)
 
-
 # `Maven`工程继承和聚合关系
+
+## `maven` 工程继承关系
+
+`maven` 工程继承关系是指在 `maven` 项目中，让一个项目从另一个项目中继承配置信息的机制。继承可以让我们在多个项目中共享同一配置信息，简化项目的管理和维护工作。
+
+> 继承作用，可以在父工程中统一管理项目中的依赖信息
+
+- 对于一个比较大的项目进行拆分。
+- 在一个 `project` 下创建很多个 `module`;
+- 每一个 `module` 都需要配置自己的依赖信息 (每个 `module` 维护自己的依赖信息容易出现冲突);
+
+> 继承语法
+
+父工程 `pom` 文件中，通过 `<packaging>pom</packaging>` 标签声明当前项目用于管理 `maven` 项目，不参与打包;
+
+父工程中通过 `<modules>` 标签聚合子模块
+
+- 子模块的路径是相对于父工程的 `pom.xml` 文件所在目录的;
+- 子模块默认按照 `<modules>` 中的生命顺序构建;
+- 子模块可以是独立的 `maven` 项目，也可以有自己的 `<modules>` (多级聚合);
+
+step1: 父工程 `pom.xml` 文件中
+
+```text
+<groupId>com.example.web</groupId>
+<artifactId>maven-parent</artifactId>
+<version>1.0-SNAPSHOT</version>
+<!--
+    由于父工程不需要参与打包，因此打包方式需要改成 pom
+-->
+<packaging>pom</packaging>
+
+<modules>
+  <!-- 配置子模块的路径 -->
+  <module>../maven-sub-proj-1</module>
+</modules>
+```
+
+step2: 子工程的 `pom.xl` 文件中配置
+
+- `parent.groupId`: 必填，父项目的 `groupId`;
+- `parent.artifactId`: 必填，父项目的 `artifactId`;
+- `parent.version`: 必填，父项目的版本号;
+- `relativePath`: 选填，父 `pom` 的相对路径
+    - 默认值为 `../pom.xml` (从子项目的上级目录中查找);
+    - 若 父 `pom` 不在默认路径，需要显示声明 父 `pom` 路径 (例如: `../maven-parent/pom.xml`);
+    - 若 父 `pom` 已经存在于仓库中 (例如公司私服)，则可以省略 `<relativePath>` 属性;
+
+子工程的 `groupId` 和 `version` 建议同父工程保持一致，子工程 `groupId`、`version` 和 父工程 `groupId`、`version`
+一致时，子工程 `pom` 文件中只需要声明子工程的 `artifactId` 即可;
+
+```xml
+<!-- 声明父工程的坐标 -->
+<parent>
+    <groupId>com.example.web</groupId>
+    <artifactId>maven-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <!--
+        配置父容器的路径
+        1. <relativePath> 默认值为 ../pom.xml，即默认从当前子模块的上级目录查找;
+        2. 若父 pom 不在默认路径，则需要显式声明 父 pom 路径 (例如当前配置 ../maven-parent/pom.xml)
+        3. 若父 pom 已存在于仓库中 (例如公司私服)，可以省略 <relativePath>
+    -->
+    <relativePath>../maven-parent/pom.xml</relativePath>
+</parent>
+
+        <!-- 子工程的 groupId 和 version 同父工程保持一致时，子工程 pom 只需要声明 artifactId -->
+<artifactId>maven-sub-proj-1</artifactId>
+```
+
+## `<dependencies>` 和 `<dependencyManagement>`
+
+| 特性        | `<dependencies>`                     | `<dependencyManagement>`   |
+|-----------|--------------------------------------|----------------------------|
+| 依赖是否生效    | 直接生效，添加到类路径                          | 不生效，仅定义版本                  |
+| 子模块是否需要声明 | 子模块自动继承，无需声明                         | 子模块必须显示声明依赖，可以省略版本号        |
+| 版本覆盖      | 子模块无法覆盖父工程中声明的依赖 </br> (路径最短优先原则)    | 子模块可以显示指定版本号覆盖**父工程中的定义**  |
+| 典型场景      | 所有子模块共享的基础依赖 (例如: `junit`、`Logback`) | 需要统一版本的依赖 (例如: `spring` 等) |
+
+> case1: 在 父 `pom` 的 `<dependencies>` 标签下声明依赖，父工程导入对应的依赖，子模块自动继承依赖
+
+![maven-extends-dependency-from-parent](./imgs/maven-extends-dependency-from-parent.png)
+
+> case2: 在 父 `pom` 的 `<dependencyManagement>` 标签下生命依赖，父工程仅仅声明依赖，不会导入依赖，子工程需要手动导入依赖
+
+![maven-extends-dependency-management-sub-declare](./imgs/maven-extends-dependency-management-sub-declare.png)
+
+> case3: 在 父 `pom` 的 `<dependencyManagement>` 标签下生命依赖，父工程仅仅声明依赖，不会导入依赖，子工程需要手动导入依赖,且使用不同的
+version 版本
+
+![maven-extends-dependency-management-sub-declare-other](./imgs/maven-extends-dependency-management-sub-declare-other.png)
+
+## `Maven` 聚合关系
+
 
 # `Maven` 私服
 
