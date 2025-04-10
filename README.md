@@ -511,14 +511,29 @@ step2: 子工程的 `pom.xl` 文件中配置
 ![maven-extends-dependency-management-sub-declare](./imgs/maven-extends-dependency-management-sub-declare.png)
 
 > case3: 在 父 `pom` 的 `<dependencyManagement>` 标签下生命依赖，父工程仅仅声明依赖，不会导入依赖，子工程需要手动导入依赖,且使用不同的
-version 版本
+> version 版本
 
 ![maven-extends-dependency-management-sub-declare-other](./imgs/maven-extends-dependency-management-sub-declare-other.png)
 
 ## `Maven` 聚合关系
 
+`Maven` 聚合是指将多个项目组织到一个父工程中，以便一起构建和管理的机制。聚合可以帮助我们更好的管理一组相关的子项目，同时简化他们的构建和部署过程。
 
-# `Maven` 私服
+聚合的作用
+
+- 管理多个子项目: 通过聚合，可以将多个子项目组织在一起，方便管理和维护;
+- 构建和发布一组相关的项目: 通过聚合，可以在一个命令中构建和发布多个相关的项目，简化了部署和维护工作;
+- 优化构建顺序: 通过聚合，可以对多个项目进行顺序控制，避免出现构建依赖混乱导致构建失败的情况;
+- 统一管理依赖项: 通过聚合，可以在父工程中管理公共依赖项和插件，避免重复定义;
+
+> maven-parent mvn clean
+
+![maven-aggregate-clean](./imgs/maven-aggregate-clean.png)
+
+> maven-parent mvn package
+
+![maven-aggregate-package](./imgs/maven-aggregate-package.png)
+
 
 
 
